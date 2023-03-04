@@ -1,0 +1,94 @@
+*****Cucumber Kurulumu*****
+-Cucumber page object model icin olusturduugmunuz klasorler :
+    pages -> page objectler
+    runners -> test caseleri run etmek, raporlar eklemek, feature file ile step definitionslari birlestirmek icin
+    stepdefinitions -> java kodlari
+    utilities -> reusable metotlar, driver, configreader,..
+-Cucumber feature klasoru
+    Tum feature file lar bu klasore gider
+    Tum test caseler gherken dilinde bu klasorde yazilir
+    Her bir feature filenın arkasında java kodları olmak zorundadır
+
+-----------19 Subat 2023---------------------------
+1. Feature file olustur: ilkfeaturefile.feature
+Feature: ilk feature file
+  Scenario: TC01_google_iphone_arama
+    Given kullanici google gider
+    When kullanici iphone için arama yapar
+    Then sonuclarda iphone oldugunu dogrular
+2. Runner classini run et
+3. Console dan missing step definitions lari kopyala
+4. stepdefinitions klasorunde GoggleStepDefinitions class i olustur ve oraya yapistir
+    @Given("kullanici google gider")
+    public void kullanici_google_gider() {
+    }
+    @When("kullanici iphone için arama yapar")
+    public void kullanici_iphone_için_arama_yapar() {
+    }
+    @Then("sonuclarda iphone oldugunu dogrular")
+    public void sonuclarda_iphone_oldugunu_dogrular() {
+    }
+5. Step definitionslara gerekli java kodlarini yaz
+    @Given("kullanici google gider")
+    public void kullanici_google_gider() {
+        Driver.getDriver().get(ConfigReader.getProperty("google_url"));
+    }
+    NOTE: ELementleri bulmak icin page paketini kullan
+    public GooglePage(){
+        PageFactory.initElements(Driver.getDriver(),this);
+    }
+    @FindBy(xpath = "(//div[@class='QS5gu sy4vM'])[2]")
+    public WebElement popUpAccept;
+    @FindBy(name = "q")
+    public WebElement searchBox;
+
+
+#Feature'nin diger adi Epic'tir) cucumberdeki manasi test dosyasidir.
+#  1. Her feature file, Feature: kelimesi ile başlamak zorundadır
+#  2. Her bir file da, yalnız bir Feature: kullanılabilir
+#  3. Senaryo(TEST CASE) oluşturmak için Scenerio: kelimesi kullanılır
+#  4. Birden fazla Scenerio: kullanılabilir
+#  5. Her bir adım Given, When, And, Then, But, * kelimelerinden biriyle başlamalıdır.
+#  6. Given -> Genelde ilk satırlarda, pre condition stepleri için kullanılır.
+#  7. Then -> Genelde son satırlarda, verification stepleri için kullanılır.
+#  8. And, When -> Genelde ara adımlarda bağlaç olarak kullanılır.
+#  NOTE: Teknik olarak istenilen kelime istenilen stepte kullanılabilir,
+#        ama anlam karmaşası olmaması için bu adımlar takip edilir.
+#  9. Belirli Scenario lari calistirmak icin cucumber tags ler kullanilir
+#  tag ler Feature, Scenario, Scenario Outline, Examples kelimeleri ile birlikte kullanilabilir
+# 10. Background kelimesi herbir Scenaryo kelimesinden once tek bir sefer calisir. Iki tane Background EKLEYEMEYIZ
+
+Runner class: Bu sinif test caseleri run etmek ve ayni zamanda bazi ek ozellikler getirilerek
+configurationlar icin kullanilir
+#11. dryRun= false -> dryRun yokmus gibi normal sekilde calisir. Yani tum adimlari tek tek browser'de calistirir
+    dryRun= true-> Yeni bir step eklendiginde sadece missing step definitions'lari (tanimlanmamais adimlari) kontrol edip olusturmak
+    icin kullanilir. Zamandan tasarruf saglar.
+
+
+#---------Scenario Outline-----------------
+ #Scenario -> Scenario Outline
+ #"" -> "<sutun_ismi>"
+ #Example kelimesi Scenario Outline dan sonra kullanilmali
+ #Example verilerin kullanildagi yerdir
+ ----------
+ Scenario Outline Data Driven Testing icin kullanilir
+ Yani benzer scenarioyu tekrar tekrar farkli datalarda calistirmak icin kullanilir
+ Scenario Outline cucumber cok Onemlidir.
+ Ne zaman birden fazla data ile islem yaparsak, zaman scenario outline kullanabiliriz.
+ Scenario Outline Excel ile atomasyon yapmaya benzer, tek fark, kullanimi daha kolaydir
+
+
+
+ Scenari Outline ile DDT yapılabilir. Scenario Outline iyi bilinmelidir.
+ Test adimlarini(STEPS) data reusable yapmak icin kullanilir
+ En çok kullanılan cucumber ozelliklerinden biridir
+ Examples kelisi veri girisleri icin kullanilmalidir
+ Step definitionslardaki data tipi STRINGdir
+ Examples kelimesi en sonda kullanilir
+ Data Tables ile DDT yapılabilir
+ Test adimlarini(STEPS) data reusable yapmak icin kullanilir
+ Scenari Outline kadar yaygın degildir
+ Examples kelimesi kullanılmaz
+ Step definitionslardaki data tipi DATATABLE
+ DataTablelar ara adimlardada(STEPS) kullanilabilir
+ NOT: Datatables ve Scenario Outline birlikle kullanilabilir
